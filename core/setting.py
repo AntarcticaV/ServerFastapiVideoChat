@@ -1,2 +1,2 @@
 POST = 8000
-HOST = "0.0.0.0"
+HOST = "localhost"

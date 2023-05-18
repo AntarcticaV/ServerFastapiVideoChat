@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 from core.prisma import prismaBD
 from core import setting
-from app.routers import routers
+from core.routers import set_routers
 
 app = FastAPI(title="Learn FastAPI")
 
@@ -10,7 +10,7 @@ app = FastAPI(title="Learn FastAPI")
 @app.on_event("startup")
 async def startup():
     await prismaBD.connect()
-    routers(app)
+    set_routers(app)
 
 
 @app.on_event("shutdown")
