@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from core.prisma import prismaBD
+from prisma.models import User
 
 
 class BaseUser(BaseModel):
@@ -25,16 +26,18 @@ class UserPutPassword(BaseUser):
 
 class UserOut(BaseUser):
     id_image: int
+    status: bool
 
     @staticmethod
-    async def convert(orig: prismaBD.user):
-        print(orig)
+    async def convert(orig: User|None, stat:bool):
+        # print(orig)
         ret = UserOut(
             name=orig.name,
             surname=orig.surname,
             email=orig.email,
             id_image=orig.id_image,
-            nickname=orig.nickname
+            nickname=orig.nickname,
+            status=stat
         )
         return ret
 

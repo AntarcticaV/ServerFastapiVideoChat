@@ -4,6 +4,7 @@ from core.prisma import prismaBD
 from core import setting
 from core.routers import set_routers
 
+
 app = FastAPI(title="Learn FastAPI")
 
 
