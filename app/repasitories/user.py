@@ -1,10 +1,30 @@
-from fastapi import UploadFile
+from fastapi import UploadFile, WebSocket,WebSocketDisconnect
 from core.prisma import prismaBD
 from prisma.models import Image
 # import aiofiles
 from app.models.model_user import UserAuth, UserOut, UserPutImage, UserPutNickname, UserPutPassword, UserReg
 from app.repasitories.base_user_repasitories import BaseUserRepasitories
+from typing import List
+from datetime import datetime
 
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def broadcast_video(self, video_frame: str, sender: WebSocket):
+        for connection in self.active_connections:
+            if connection != sender:
+                await connection.send_text(video_frame)
+
+
+manager = ConnectionManager()
 
 class UserTemRepasitories(BaseUserRepasitories):
 
@@ -58,3 +78,12 @@ class UserTemRepasitories(BaseUserRepasitories):
     #     except:
     #         status = False
     #     return status
+    
+    async def websocket_video(self, websocket: WebSocket):
+        await manager.connect(websocket)
+        try:
+            while True:
+                data = await websocket.receive_text()
+                await manager.broadcast_video(data, websocket)
+        except WebSocketDisconnect:
+            manager.disconnect(websocket)

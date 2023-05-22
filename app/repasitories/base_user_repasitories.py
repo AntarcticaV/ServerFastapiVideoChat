@@ -1,5 +1,5 @@
 from app.models.model_user import UserReg, UserOut, UserAuth, UserPutNickname, UserPutPassword,UserPutImage
-from fastapi import UploadFile
+from fastapi import UploadFile, WebSocket
 
 
 class BaseUserRepasitories:
@@ -19,5 +19,8 @@ class BaseUserRepasitories:
     async def chench_image(self, user_chench_image:UserPutImage)->UserOut:
         raise NotImplementedError
     
-    async def download_image(swlf,file:UploadFile)->bool:
-        raise NotImplementedError 
+    async def download_image(self,file:UploadFile)->bool:
+        raise NotImplementedError
+    
+    async def websocket_video(self, websocket: WebSocket):
+        raise NotImplementedError

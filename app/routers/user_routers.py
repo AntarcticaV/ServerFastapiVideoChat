@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, UploadFile, WebSocket
 from app.dependencies import get_user_repo
 from app.models.model_user import UserAuth, UserOut, UserReg, UserPutNickname, UserPutPassword,UserPutImage
 from app.repasitories.base_user_repasitories import BaseUserRepasitories
@@ -30,3 +30,7 @@ async def chench_password(user:UserPutPassword, user_repo:BaseUserRepasitories=D
 # @router.post("/download_file", response_model=bool)
 # async def download_file(file: UploadFile, user_repo:BaseUserRepasitories=Depends(get_user_repo)):
 #     return user_repo.download_image(file)
+
+@router.websocket("/ws_video")
+async def websocket_video(websocket: WebSocket, ws_repo:BaseUserRepasitories=Depends(get_user_repo)):
+    await ws_repo.websocket_video(websocket)
