@@ -4,8 +4,7 @@ from prisma.models import Image
 # import aiofiles
 from app.models.model_user import UserAuth, UserOut, UserPutImage, UserPutNickname, UserPutPassword, UserReg
 from app.repasitories.base_user_repasitories import BaseUserRepasitories
-from typing import List
-from datetime import datetime
+import websockets
 
 class ConnectionManager:
     def __init__(self):
@@ -24,9 +23,11 @@ class ConnectionManager:
                 await connection.send_text(video_frame)
 
 
-manager = ConnectionManager()
+
 
 class UserTemRepasitories(BaseUserRepasitories):
+    manager = ConnectionManager()
+    connected_clients = set()
 
     async def registration_user(self, user_reg: UserReg) -> UserOut:
         status:bool
@@ -80,10 +81,25 @@ class UserTemRepasitories(BaseUserRepasitories):
     #     return status
     
     async def websocket_video(self, websocket: WebSocket):
-        await manager.connect(websocket)
+        await self.manager.connect(websocket)
         try:
             while True:
                 data = await websocket.receive_text()
-                await manager.broadcast_video(data, websocket)
+                await self.manager.broadcast_video(data, websocket)
         except WebSocketDisconnect:
-            manager.disconnect(websocket)
+            self.manager.disconnect(websocket)
+    
+    async def websocket_audio(self, websocket: WebSocket):
+        await websocket.accept()
+        self.connected_clients.add(websocket)
+        try:
+            while True:
+                data = await websocket.receive_bytes()
+                await self.broadcast(data, websocket)
+        except websockets.exceptions.ConnectionClosedError:
+            self.connected_clients.remove(websocket)
+            
+    async def broadcast(self, data: bytes, sender: WebSocket):
+        for client in self.connected_clients:
+            if client != sender:
+                await client.send_bytes(data)

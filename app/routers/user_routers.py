@@ -34,3 +34,7 @@ async def chench_password(user:UserPutPassword, user_repo:BaseUserRepasitories=D
 @router.websocket("/ws_video")
 async def websocket_video(websocket: WebSocket, ws_repo:BaseUserRepasitories=Depends(get_user_repo)):
     await ws_repo.websocket_video(websocket)
+    
+@router.websocket("/ws_audio")
+async def websocket_audio(websocket: WebSocket, ws_repo:BaseUserRepasitories=Depends(get_user_repo)):
+    await ws_repo.websocket_video(websocket)

@@ -24,3 +24,6 @@ class BaseUserRepasitories:
     
     async def websocket_video(self, websocket: WebSocket):
         raise NotImplementedError
+    
+    async def websocket_audio(self, websocket:WebSocket):
+        raise NotImplementedError
