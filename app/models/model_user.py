@@ -19,7 +19,8 @@ class UserReg(BaseUser):
     password: str
 
 
-class UserPutPassword(BaseUser):
+class UserPutPassword(BaseModel):
+    nickname:str
     password: str
     new_password: str
 
@@ -46,5 +47,6 @@ class UserPutImage(BaseUser):
     new_image: str
 
 
-class UserPutNickname(BaseUser):
+class UserPutNickname(BaseModel):
+    nickname:str
     new_nickname: str

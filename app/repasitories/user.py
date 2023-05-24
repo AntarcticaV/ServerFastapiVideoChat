@@ -30,7 +30,7 @@ class UserTemRepasitories(BaseUserRepasitories):
     connected_clients = set()
 
     async def registration_user(self, user_reg: UserReg) -> UserOut:
-        status:bool
+        status:bool = False
         user_out = await prismaBD.user.find_first(where={'nickname':user_reg.nickname})
         if user_out != None:
             status = False
@@ -55,11 +55,11 @@ class UserTemRepasitories(BaseUserRepasitories):
         else:
             user_out = await prismaBD.user.update(where={'nickname':user_chanch_nick.nickname}, data={'nickname':user_chanch_nick.new_nickname})
             status = True
-            pass
         return await UserOut.convert(user_out,status)
     
     async def chench_password(self, user_chench_password: UserPutPassword) -> UserOut:
         status:bool = True
+        print(user_chench_password)
         user_out = await prismaBD.user.update(where={'nickname':user_chench_password.nickname}, data={'password':user_chench_password.new_password})
         return await UserOut.convert(user_out,status)
     

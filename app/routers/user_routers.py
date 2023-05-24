@@ -15,11 +15,11 @@ async def registration_user(user: UserReg, user_repo: BaseUserRepasitories = Dep
 async def authenticate_user(user: UserAuth, user_repo: BaseUserRepasitories = Depends(get_user_repo)):
     return await user_repo.authenticate_user(user)
 
-@router.put("/chench_nickname", response_model=UserOut)
+@router.post("/chench_nickname", response_model=UserOut)
 async def chench_nickname(user: UserPutNickname, user_repo: BaseUserRepasitories =Depends(get_user_repo)):
     return await user_repo.chench_nickname(user)
 
-@router.put("/chench_password", response_model=UserOut)
+@router.post("/chench_password", response_model=UserOut)
 async def chench_password(user:UserPutPassword, user_repo:BaseUserRepasitories=Depends(get_user_repo)):
     return await user_repo.chench_password(user)
 
