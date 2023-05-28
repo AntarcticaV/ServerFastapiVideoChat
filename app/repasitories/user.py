@@ -14,9 +14,9 @@ class ConnectionManager:
         await websocket.accept()
         self.active_connections.append(websocket)
 
-    async def disconnect(self, websocket: WebSocket):
-        await websocket.close()
-        self.active_connections.remove(websocket)
+    def disconnect(self, websocket: WebSocket):
+        del self.active_connections[list(filter(
+            lambda x: self.active_connections[x] == websocket, self.active_connections))[0]]
 
     async def broadcast_video(self, video_frame: bytes, sender: WebSocket):
         for connection in self.active_connections:
@@ -87,11 +87,4 @@ class UserTemRepasitories(BaseUserRepasitories):
         except :
             await self.manager_audio.disconnect(websocket)
             print(self.manager_audio.active_connections)
-        
-        if (WebSocketDisconnect):
-            await self.manager_audio.disconnect(websocket)
-
-    async def broadcast(self, data: bytes, sender: WebSocket):
-        for client in self.connected_clients:
-            if client != sender:
-                await client.send_bytes(data)
+            
